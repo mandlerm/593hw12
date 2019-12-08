@@ -12,5 +12,6 @@
         "Box URL": "http://{{domain3000}}/",
         "Box URL SSL": "https://{{domain3000}}/"
     },
-    "autogradeTestScripts": [".guides/secure/autograde.sh",".guides/secure/autograder.py"]
+    "autogradeTestScripts": [".guides/secure/autograde.sh",".guides/secure/autograder.py"],
+  "debugger": [{"type":"GDB","command":"./submit/lc4.c","before":"./submit/lc4 test1.obj","uuid":"63c5b27c-b974-c8be-67bf-ace9f127778b","name":"lc4_memory"}]
 }

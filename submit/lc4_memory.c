@@ -10,15 +10,13 @@
 #include <stdlib.h>
 #include "lc4_memory.h"
 
-
+void testPrint(row_of_memory* head);
 /*
  * adds a new node to the end of a linked list pointed to by head
  */
-int add_to_list (row_of_memory** head,
-		 short unsigned int address,
-		 short unsigned int contents)
-{
+int add_to_list (row_of_memory** head, short unsigned int address, short unsigned int contents) {
 	/* allocate memory for a single node */
+   
     row_of_memory *newRow = malloc(sizeof(row_of_memory)) ;
     if (newRow == NULL) return -1 ;
     
@@ -32,13 +30,16 @@ int add_to_list (row_of_memory** head,
     newRow->label = NULL ;
     newRow->assembly = NULL ;
     newRow->next = NULL ;
-    
-    printf("NODE: %x -- %x\n\n", newRow->address, newRow->contents) ;
+   
+   
 	/* if head==NULL, node created is the new head of the list! */
     if (*head == NULL) {
+//         printf("FIRSTNODE\n") ;
         *head = newRow ;
         return 0;
     }
+    
+//     testPrint(head) ;
     
     row_of_memory *foundNode;
     foundNode = search_address (*head,newRow->address) ;
@@ -46,51 +47,73 @@ int add_to_list (row_of_memory** head,
     // find the right place to put the node
     // if node already exists, update node
     if (foundNode != NULL) {
+//         printf("Found a duplicate\n") ;
         foundNode->contents = newRow->contents ; 
         return 0 ;
     }
-
+    
     int found = 0;
     row_of_memory *rear, *front ;
     rear = front = *head ; 
     
+    if(newRow->address < rear->address) {
+//         printf("INSERTING IN VERY FRONT\n")  ;
+        *head = newRow ;
+        newRow->next = rear ;
+        
+        return 0;
+    }
+    int i=1;
     while(front != NULL) {
-        if ((found = (newRow->address < front->address))) {
+        printf("Counter = %d\n", i) ;
+        if (newRow->address < front->address) {
+//             printf("FOUND MY SPOT\n") ;
             rear->next = newRow ;
             newRow->next = front ;
             return 0;
         }
         else {
+//            printf("interating forward\n") ;
            rear = front ;
-           front = front->next ;
+           front = front->next ;  
         }
+        i++ ;
     }
     
+//     printf("INSERTING IN VERY BACK\n") ;
     rear->next = newRow ;
     newRow->next = NULL ;
+//     printf("*head->address: %x\n", (*head)->address) ;
+//     printf("*head->next: %x\n", (*head)->next) ;
+//     printf("&newRow: %x\n", newRow) ;
+//     printf("newRow->address: %x\n", newRow->address) ;
+//     testPrint(*head) ;
     
-
-	/* otherwise, insert node into the list in address ascending order */
-
-	/* return 0 for success, -1 if malloc fails */
-    printf("\n****************\n");
-    print_list (head ) ;
     
-    printf("\nExiting AddNode\n\n");
+//     printf("LINE 80: Current address= %x -- next= %x\n", newRow->address, newRow->next);
+    
+//     print_list(head) ;
+    
+//     printf("Exiting AddNode\n\n");
     
     return 0;
 }
 
 
     // ****** . PRINTING OUT ADDRESSES TO CHECK ORDERING
-// void testPrint(row_of_memory* head) {}    
-//     row_of_memory *front = *head ;
-//     do {
-//         printf("address %x\n", front->address);
-//         front = front->next ;
-//     } while(front != NULL) ;
-// 	return ;
-// }
+void testPrint(row_of_memory* head) {     
+    row_of_memory *front = head ;
+    do {
+//         printf("&front: %x -- front->address %x -- front->next %x\n", front, front->address, front->next);
+        printf("address: %x -- label: %s -- contents: %x\n", front->address, front->label, front->contents);
+        if (front->next == NULL) {
+//             printf("NULL -- end of list\n");
+            break ;
+        }
+        front = front->next ;
+    } while(front != NULL) ;
+	return ;
+}
 
 /*
  * search linked list by address field, returns node if found
@@ -99,13 +122,10 @@ row_of_memory* search_address (row_of_memory* head,
 			       short unsigned int address )
 {
 	row_of_memory *front = head ;
-    printf("\nlooking for a node\n\n");
     while (front != NULL){
         if (front->address == address) {
-            printf("\nReturning: %x\n\n", front); 
             return front;
         }
-        
         front=front->next;
     }
     
@@ -115,7 +135,7 @@ row_of_memory* search_address (row_of_memory* head,
 
 	/* return NULL if list is empty or if "address" isn't found */
 
-    printf("\nexiting serach node\n\n");
+//     printf("\nexiting serach node\n\n");
 	return NULL ;
 }
 
@@ -146,8 +166,11 @@ void print_list (row_of_memory* head )
 	/* traverse linked list, print contents of each node */
     if (head == NULL) { printf("empty list") ; }
     row_of_memory *front = head ;
+    printf("Address of pointer = %x\n\n", front->address);
     do {
-        printf("address: %x -- contents %x -- next: %x\n", front-> address, front->contents, front->next);
+//         printf("address: %x -- contents %x -- next: %x\n", front-> address, front->contents, front->next);
+//         printf("front= %x\n", front) ;
+//         printf("front->next= %x\n\n", front->next) ;
         front = front->next ;
     } while(front != NULL) ;
     

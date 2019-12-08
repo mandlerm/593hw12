@@ -46,6 +46,7 @@ int main (int argc, char** argv) {
 	/* step 3: call function: parse_file() in lc4_loader.c 	*/
 	/*   TODO: call function & check for errors		*/
 
+//     printf("address of memory: %p\n", &memory);
     parse_file (my_obj_file, &memory) ;
 
 	/* step 4: call function: reverse_assemble() in lc4_disassembler.c */
