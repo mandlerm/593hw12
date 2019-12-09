@@ -23,3 +23,5 @@
  */
 int reverse_assemble (row_of_memory* memory) ;
 
+
+void otherFunction();

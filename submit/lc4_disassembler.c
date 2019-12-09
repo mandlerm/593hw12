@@ -8,9 +8,11 @@
 
 #include <stdio.h>
 #include "lc4_memory.h"
+#include "lc4_disassembler.h"
 
-int reverse_assemble (row_of_memory* memory)
-{
-
+int reverse_assemble (row_of_memory* memory) {
+    row_of_memory* code_node ;
+    short unsigned int opcode = 1 ;
+    code_node = search_opcode(memory ,opcode) ;
 	return 0 ;
 }

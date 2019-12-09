@@ -11,6 +11,7 @@
 #include "lc4_memory.h"
 
 void testPrint(row_of_memory* head);
+
 /*
  * adds a new node to the end of a linked list pointed to by head
  */
@@ -27,7 +28,7 @@ int add_to_list (row_of_memory** head, short unsigned int address, short unsigne
 // populate note
     newRow->address = address ;
     newRow->contents = contents ;
-    newRow->label = NULL ;
+//     newRow->label = NULL ;
     newRow->assembly = NULL ;
     newRow->next = NULL ;
    
@@ -47,7 +48,6 @@ int add_to_list (row_of_memory** head, short unsigned int address, short unsigne
     // find the right place to put the node
     // if node already exists, update node
     if (foundNode != NULL) {
-//         printf("Found a duplicate\n") ;
         foundNode->contents = newRow->contents ; 
         return 0 ;
     }
@@ -57,7 +57,6 @@ int add_to_list (row_of_memory** head, short unsigned int address, short unsigne
     rear = front = *head ; 
     
     if(newRow->address < rear->address) {
-//         printf("INSERTING IN VERY FRONT\n")  ;
         *head = newRow ;
         newRow->next = rear ;
         
@@ -65,37 +64,21 @@ int add_to_list (row_of_memory** head, short unsigned int address, short unsigne
     }
     int i=1;
     while(front != NULL) {
-        printf("Counter = %d\n", i) ;
         if (newRow->address < front->address) {
-//             printf("FOUND MY SPOT\n") ;
             rear->next = newRow ;
             newRow->next = front ;
             return 0;
         }
         else {
-//            printf("interating forward\n") ;
            rear = front ;
            front = front->next ;  
         }
         i++ ;
     }
-    
-//     printf("INSERTING IN VERY BACK\n") ;
+
     rear->next = newRow ;
     newRow->next = NULL ;
-//     printf("*head->address: %x\n", (*head)->address) ;
-//     printf("*head->next: %x\n", (*head)->next) ;
-//     printf("&newRow: %x\n", newRow) ;
-//     printf("newRow->address: %x\n", newRow->address) ;
-//     testPrint(*head) ;
-    
-    
-//     printf("LINE 80: Current address= %x -- next= %x\n", newRow->address, newRow->next);
-    
-//     print_list(head) ;
-    
-//     printf("Exiting AddNode\n\n");
-    
+
     return 0;
 }
 
@@ -104,10 +87,8 @@ int add_to_list (row_of_memory** head, short unsigned int address, short unsigne
 void testPrint(row_of_memory* head) {     
     row_of_memory *front = head ;
     do {
-//         printf("&front: %x -- front->address %x -- front->next %x\n", front, front->address, front->next);
         printf("address: %x -- label: %s -- contents: %x\n", front->address, front->label, front->contents);
         if (front->next == NULL) {
-//             printf("NULL -- end of list\n");
             break ;
         }
         front = front->next ;
@@ -127,25 +108,33 @@ row_of_memory* search_address (row_of_memory* head,
             return front;
         }
         front=front->next;
-    }
-    
+    }  
     /* traverse linked list, searching each node for "address"  */
-
 	/* return pointer to node in the list if item is found */
-
 	/* return NULL if list is empty or if "address" isn't found */
 
-//     printf("\nexiting serach node\n\n");
 	return NULL ;
 }
 
 /*
  * search linked list by opcode field, returns node if found
  */
-row_of_memory* search_opcode  (row_of_memory* head,
-				      short unsigned int opcode  )
-{
-	/* traverse linked list until node is found with matching opcode
+row_of_memory* search_opcode  (row_of_memory* head, short unsigned int opcode) {
+    row_of_memory* ptr = head ;
+    if (head == NULL) return 1;
+    int op_match;
+ 
+    do {
+        if (ptr->assembly == NULL) {
+           op_match = retrieve_op(ptr->contents); 
+            if (op_match == opcode) {           
+                return ptr ;
+            }               
+        } 
+        ptr=ptr->next ;
+    } while (ptr != NULL) ;
+    
+    /* traverse linked list until node is found with matching opcode
 	   AND "assembly" field of node is empty */
 
 	/* return pointer to node in the list if item is found */
@@ -155,6 +144,9 @@ row_of_memory* search_opcode  (row_of_memory* head,
 	return NULL ;
 }
 
+int retrieve_op(short unsigned int op) {
+    return (op>>12);
+}
 
 void print_list (row_of_memory* head )
 {
@@ -166,11 +158,16 @@ void print_list (row_of_memory* head )
 	/* traverse linked list, print contents of each node */
     if (head == NULL) { printf("empty list") ; }
     row_of_memory *front = head ;
-    printf("Address of pointer = %x\n\n", front->address);
+    
+    printf("<label>\t\t<address>\t<contents>\t<assembly>\n") ;
+    
     do {
-//         printf("address: %x -- contents %x -- next: %x\n", front-> address, front->contents, front->next);
-//         printf("front= %x\n", front) ;
-//         printf("front->next= %x\n\n", front->next) ;
+        if (front->label == NULL){
+            printf("\t\t\t\t%x\t\t%x\t\n", front->contents, front->assembly);      
+        }
+        else {
+            printf("%s\t\t%x\t\t%x\t\n", front->label, front->contents, front->assembly);      
+        }
         front = front->next ;
     } while(front != NULL) ;
     

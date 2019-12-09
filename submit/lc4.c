@@ -13,6 +13,8 @@
 
 /* program to mimic pennsim loader and disassemble object files */
 
+void test_print(row_of_memory* memory);
+
 int main (int argc, char** argv) {
 
 	/**
@@ -22,7 +24,6 @@ int main (int argc, char** argv) {
 
 	/* step 1: create head pointer to linked list: memory 	*/
 	row_of_memory* memory = NULL ;
-
 
 	/* step 2: determine filename, then open it		*/
 	/*   TODO: extract filename from argv, pass it to open_file() */
@@ -38,20 +39,26 @@ int main (int argc, char** argv) {
            fprintf(stderr, "error1: file failed to open\n");
             return 1;
         }    
-//         else {
-//             printf("File opened\nProcessing to follow\n") ;
-//         }
     }
- 
+
 	/* step 3: call function: parse_file() in lc4_loader.c 	*/
 	/*   TODO: call function & check for errors		*/
 
-//     printf("address of memory: %p\n", &memory);
-    parse_file (my_obj_file, &memory) ;
-
+    int ret_val = parse_file (my_obj_file, &memory) ;
+	
+    if(ret_val != 0) {
+        printf("Something has gone horribly wrong\n");
+        return 1;
+    }
+// 	test_print(memory);
+    
 	/* step 4: call function: reverse_assemble() in lc4_disassembler.c */
 	/*   TODO: call function & check for errors		*/
+//     printf("&memory: %x -- memory: %x, *memory: %x\n", &memory, memory, *memory);   
 
+    reverse_assemble(memory) ;
+    
+    
 
 	/* step 5: call function: print_list() in lc4_memory.c 	*/
 	/*   TODO: call function 				*/
@@ -59,7 +66,7 @@ int main (int argc, char** argv) {
     
 //     printf("about to print\n\n");
 //     print_list (NULL) ;
-//     print_list (memory ) ;
+    print_list (memory ) ;
 
 	/* step 6: call function: delete_list() in lc4_memory.c */
 	/*   TODO: call function & check for errors		*/
@@ -69,6 +76,19 @@ int main (int argc, char** argv) {
 //     delete_list (memory) ;
 
 	/* only return 0 if everything works properly */
-    fclose(my_obj_file) ;
+    
+    int status = fclose(my_obj_file) ;
+    printf("file closed %d\n", status);
 	return 0 ;
+}
+
+void test_print(row_of_memory* memory) {
+    printf("TEST PRINT\n");
+    
+    while (memory!=NULL) {
+        printf("%x -- %x -- %s -- %x -- %x\n", memory, memory->address, memory->label, memory->contents, memory->next) ;
+        memory = memory->next;
+    }
+    
+    
 }

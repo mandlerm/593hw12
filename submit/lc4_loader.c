@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "lc4_memory.h"
 #include <stdlib.h>
+#include <string.h>
 
 /* declarations of functions that must defined in lc4_loader.c */
 int flip_16_bytes(FILE* my_obj_file);
@@ -49,29 +50,31 @@ int parse_file (FILE* my_obj_file, row_of_memory** memory) {
             else if (header == 0xc3b7) {
                 row_of_memory* matched_node = search_address(*memory, address) ;
                 if (matched_node == NULL) {
-                    printf("No match\n") ;
-                    
+                    val = NULL;
+                    add_to_list(memory, address, val) ;  
                     //make node
                 }
-                else {
-                    printf("need to update node\n") ;
-                    printf("%d characters in the label\n", n);
-                    printf("address is %x - %x\n", address, matched_node->address);
-                    char *word = malloc(sizeof(char) * (n+1)) ;
-                    char *start=word;
-                    for(i=0; i<n; i++){
-//                       val =   flip_16_bytes(my_obj_file) ;
-                       val =   fgetc(my_obj_file) ; 
-                       printf("%x --  %c \n", val, val) ; 
-                      *word = val ;
-//                       printf("%x -- %x -- %c \n", *word, val, val) ;
-                      word++ ;
+                matched_node = search_address(*memory, address) ;
+//                 printf("need to update node\n") ;
+//                 printf("%d characters in the label\n", n);
+//                 printf("address is %x - %x\n", address, matched_node->address);
+
+                char *word = malloc(sizeof(char) * (n+1)) ;
+                char *start=&word;
+                matched_node->label = word ;
+       
+                int ch;
+                for(i=0; i<n; i++){
+                   ch =  fgetc(my_obj_file) ; 
+                   *word = ch ; 
+//                   strcat(word, ch);
+//                    printf("%c\n", *word);
+//                       printf("%c -- %x -- %c \n", *start, val, val) ;
+//                 printf("word: %c, %s\n", *word, *start);
+                    word++ ;   
                 }
-                    *word = '\0' ;
-                    printf("%s\n", start);
-                    
+                *word = '\0' ;
      
-                }
                 // search for note with this address
                 // if does not exist, create a node...?
                 // if does exists, update node
@@ -81,6 +84,7 @@ int parse_file (FILE* my_obj_file, row_of_memory** memory) {
              header = flip_16_bytes(my_obj_file) ;
          }
     }
+    
 	return 0 ;
 }
 

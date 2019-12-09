@@ -40,4 +40,9 @@ void print_list		      (row_of_memory* head ) ;
 
 int delete_list    	      (row_of_memory** head ) ;
 
+// helper function to retrieve the opcode 
+int retrieve_op(short unsigned int op) ;
+
+void otherFunction();
+    
 #endif
